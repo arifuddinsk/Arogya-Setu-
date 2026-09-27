@@ -1,0 +1,21 @@
+# Render Infrastructure as Code (Blueprint)
+# Deploy Arogya Setu Backend Web Service with Persistent SQLite Disk
+services:
+  - type: web
+    name: arogya-setu-backend
+    runtime: node
+    plan: starter
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /data/arogya_setu.db
+      - key: CORS_ORIGIN
+        value: "*"
+    disk:
+      name: arogya-data
+      mountPath: /data
+      sizeGB: 1
