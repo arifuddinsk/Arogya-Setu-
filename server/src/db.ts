@@ -1,12 +1,22 @@
+import 'dotenv/config';
 import Database from 'better-sqlite3';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dbPath = process.env.DB_PATH
+
+// If DB_PATH is provided, use it; otherwise use sensible local development path
+export const dbPath = process.env.DB_PATH
   ? path.resolve(process.env.DB_PATH)
   : path.resolve(__dirname, '../arogya_setu.db');
+
+// Ensure parent directory exists before opening database (e.g. /data or custom persistent path)
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 
 export const db = new Database(dbPath);
 
