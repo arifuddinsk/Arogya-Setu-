@@ -1,6 +1,10 @@
-const API_BASE_URL = (
+const rawApiUrl = (
   (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api'
-).replace(/\/$/, '');
+).trim();
+
+// Normalize URL: ensure no trailing slash, and ensure /api endpoint prefix
+const cleanUrl = rawApiUrl.replace(/\/$/, '');
+const API_BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 
 async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
